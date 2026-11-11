@@ -1,0 +1,79 @@
+import { Editor } from 'tldraw'
+import { AgentAction } from '../../shared/types/AgentAction'
+import { BaseAgentAction } from '../../shared/types/BaseAgentAction'
+import { Streaming } from '../../shared/types/Streaming'
+import { TldrawAgent } from '../agent/TldrawAgent'
+import { AgentHelpers } from '../AgentHelpers'
+
+// ============================================================================
+// Registry
+// ============================================================================
+
+// actionType -> util
+const registry = new Map<string, AgentActionUtilConstructor<BaseAgentAction>>()
+
+/**
+ * Register an agent action util class. Call this after defining each util class.
+ *
+ * @param util - The action util class to register.
+ * @returns The registered util class.
+ */
+export function registerActionUtil<T extends AgentActionUtilConstructor<BaseAgentAction>>(
+	util: T
+): T {
+	if (registry.has(util.type)) {
+		throw new Error(`Agent action util already registered: ${util.type}`)
+	}
+	registry.set(util.type, util)
+	return util
+}
+
+/**
+ * Get an object containing instantiated agent action utils for an agent.
+ *
+ * @param agent - The agent to create utils for.
+ * @returns A record of action utils keyed by action type.
+ */
+export function getAgentActionUtilsRecord(agent: TldrawAgent) {
+	const object = {} as Record<AgentAction['_type'], AgentActionUtil<AgentAction>>
+	for (const [type, util] of registry.entries()) {
+		object[type as AgentAction['_type']] = new util(agent) as AgentActionUtil<AgentAction>
+	}
+	return object
+}
+
+// ============================================================================
+// Base Class
+// ============================================================================
+
+export abstract class AgentActionUtil<T extends BaseAgentAction = BaseAgentAction> {
+	static type: string
+
+	agent: TldrawAgent
+	editor: Editor
+
+	constructor(agent: TldrawAgent) {
+		this.agent = agent
+		this.editor = agent.editor
+	}
+
+	/**
+	 * Validates and corrects the action before it is applied.
+	 * @returns The transformed action, or null to reject the action
+	 */
+	sanitizeAction(action: Streaming<T>, _helpers: AgentHelpers): Streaming<T> | null {
+		return action
+	}
+
+	/**
+	 * Apply the action to the editor.
+	 */
+	applyAction(_action: Streaming<T>, _helpers: AgentHelpers): Promise<void> | void {
+		// Do nothing by default
+	}
+}
+
+export interface AgentActionUtilConstructor<T extends BaseAgentAction = BaseAgentAction> {
+	new (agent: TldrawAgent): AgentActionUtil<T>
+	type: T['_type']
+}

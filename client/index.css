@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap');
+@import url('tldraw/tldraw.css');
+
+* {
+	box-sizing: border-box;
+	overscroll-behavior: none;
+}
+
+body {
+	font-family: 'Inter', sans-serif;
+}
+
+.tldraw-canvas {
+	position: fixed;
+	inset: 0;
+}
+
+/* MCP bridge status */
+
+.bridge-status {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 8px;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background-color: var(--tl-color-panel);
+	box-shadow: var(--tl-shadow-1);
+	color: var(--tl-color-text-1);
+	font-family: 'Inter', sans-serif;
+	font-size: 11px;
+	font-weight: 500;
+	pointer-events: all;
+	user-select: none;
+}
+
+.bridge-status-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background-color: var(--tl-color-text-3);
+}
+
+.bridge-status-connected .bridge-status-dot {
+	background-color: rgb(76, 200, 94);
+}
+
+.bridge-status-disconnected .bridge-status-dot {
+	background-color: rgb(230, 160, 40);
+}

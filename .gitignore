@@ -1,0 +1,10 @@
+/*/node_modules
+node_modules
+.yarn/
+dist
+.tsbuild
+.env
+.env.*
+!.env.example
+.DS_Store
+*.local

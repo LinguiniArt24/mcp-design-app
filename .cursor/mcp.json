@@ -1,0 +1,12 @@
+{
+	"mcpServers": {
+		"canvas": {
+			"command": "node",
+			"args": [
+				"--import",
+				"${workspaceFolder}/node_modules/tsx/dist/loader.mjs",
+				"${workspaceFolder}/mcp-server/index.ts"
+			]
+		}
+	}
+}
